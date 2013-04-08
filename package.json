@@ -1,0 +1,25 @@
+{
+  "author": {
+    "name": "Jackson Hull",
+    "email": "jackson.hull@onefinestay.com",
+    "url": "http://tech.onefinestay.com"
+  },
+  "name": "http-ardrone",
+  "description": "A node.js wrapper for ar-drone that allows you to control your ar-drone using GET requests.",
+  "version": "0.0.1",
+  "homepage": "https://github.com/onefinestay/http-ardrone",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/onefinestay/http-ardrone.git"
+  },
+  "main": "./copter",
+  "dependencies": {
+    "express": "*",
+    "ar-drone": "*"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "readmeFilename": "README.md",
+  "_from": "git://github.com/onefinestay/http-ardrone.git"
+}
