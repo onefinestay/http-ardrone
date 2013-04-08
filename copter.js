@@ -67,11 +67,18 @@ if(connected==true){
   });
 
   // expecting (up, down, left, right, forward, backward) and speed
+  app.get('/move', function(req,res) {
+    var resp = 'move (up,down,left,right,forward,backward) speed';
+    console.log(resp);
+    res.header('Content-Type', 'text/html');
+    res.send(200,resp);
+  });
+
   app.get('/move/:direction/:speed', function(req,res) {
     var speed = parseInt(req.params.speed);
     var direction = req.params.direction;
     var resp = 'moving ' + direction + ' at speed ' + speed;
-    var usage = 'ofb qc move (up,down,left,right,forward,backward) <speed>';
+    var usage = 'move (up,down,left,right,forward,backward) speed';
     if(direction=='up'){
       client.up(speed);
     } else 
@@ -99,10 +106,17 @@ if(connected==true){
   });
 
   // expecting (cw, ccw) and speed
+  app.get('/spin', function(req,res) {
+    var resp = 'spin (cw,ccw) speed';
+    console.log(resp);
+    res.header('Content-Type', 'text/html');
+    res.send(200,resp);
+  });
+
   app.get('/spin/:direction/:speed', function(req,res) {
     var speed = parseInt(req.params.speed);
     var direction = req.params.direction;
-    var usage = 'ofb qc spin (cw,ccw) <speed>';
+    var usage = 'spin (cw,ccw) speed';
     if(direction=='cw'){
       var resp = 'spinning clockwise with speed ' + speed;
       client.clockwise(speed);
@@ -119,11 +133,19 @@ if(connected==true){
   });
 
   // expecting (the list of sequences) and duration
+  app.get('/animate', function(req,res) {
+    var sequences = ['phiM30Deg','phi30Deg','thetaM30Deg','theta30Deg','theta20degYaw200deg','theta20degYawM200deg','turnaround','turnaroundGodown','yawShake','yawDance','phiDance','thetaDance','vzDance','wave','phiThetaMixed','doublePhiThetaMixed','flipAhead','flipBehind','flipLeft','flipRight'];
+    var resp = 'animate (' + sequences + ') duration(ms)';
+    console.log(resp);
+    res.header('Content-Type', 'text/html');
+    res.send(200,resp);
+  });
+
   app.get('/animate/:sequence/:duration', function(req,res) {
     var duration = parseInt(req.params.duration);
     var sequence = req.params.sequence;
     var sequences = ['phiM30Deg','phi30Deg','thetaM30Deg','theta30Deg','theta20degYaw200deg','theta20degYawM200deg','turnaround','turnaroundGodown','yawShake','yawDance','phiDance','thetaDance','vzDance','wave','phiThetaMixed','doublePhiThetaMixed','flipAhead','flipBehind','flipLeft','flipRight'];
-    var usage = 'ofb qc animate (' + sequences + ') <duration(ms)>';
+    var usage = 'animate (' + sequences + ') <duration(ms)>';
     var resp = 'animating with sequence ' + sequence + ' for duration ' + duration + ' ms';
     if(sequences.indexOf(sequence) >= 0){
       client.animate(sequence,duration);
@@ -135,13 +157,21 @@ if(connected==true){
     res.send(200,resp);
   });
 
-  // expecting (the list of sequences), hertz and speed
+  // expecting (the list of sequences), hertz and speed    
+  app.get('/leds', function(req,res) {
+    var sequences = ['blinkGreenRed','blinkGreen','blinkRed','blinkOrange','snakeGreenRed','fire','standard','red','green','redSnake','blank','rightMissile','leftMissile','doubleMissile','frontLeftGreenOthersRed','frontRightGreenOthersRed','rearRightGreenOthersRed','rearLeftGreenOthersRed','leftGreenRightRed','leftRedRightGreen','blinkStandard']
+    var resp = 'leds (' + sequences + ') hz duration(ms)';
+    console.log(resp);
+    res.header('Content-Type', 'text/html');
+    res.send(200,resp);    
+  });
+
   app.get('/leds/:sequence/:hz/:duration', function(req,res) {
     var duration = parseInt(req.params.duration);
     var hz = parseInt(req.params.hz);
     var sequence = req.params.sequence;
     var sequences = ['blinkGreenRed','blinkGreen','blinkRed','blinkOrange','snakeGreenRed','fire','standard','red','green','redSnake','blank','rightMissile','leftMissile','doubleMissile','frontLeftGreenOthersRed','frontRightGreenOthersRed','rearRightGreenOthersRed','rearLeftGreenOthersRed','leftGreenRightRed','leftRedRightGreen','blinkStandard']
-    var usage = 'ofb leds (' + sequences + ') <hz> <duration(ms)>';
+    var usage = 'leds (' + sequences + ') hz duration(ms)';
     var resp = 'animating leds with sequence ' + sequence + ' at ' + hz + ' hz for duration ' + duration + ' ms';
     if(sequences.indexOf(sequence) >= 0){
       client.animateLeds(sequence,hz,duration);
@@ -155,7 +185,7 @@ if(connected==true){
 
   // display usage for all others
   app.get('/*', function(req,res) {
-    var resp = 'ofb (takeoff,hover,land,move,animate,leds) <args>';
+    var resp = '(takeoff,hover,land,move,animate,leds) args';
     console.log(resp);
     res.header('Content-Type', 'text/html');
     res.send(200,resp);
