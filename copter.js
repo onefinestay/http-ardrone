@@ -9,9 +9,9 @@ var connected=false;
 for (var dev in ifaces) {
   var alias=0;
   ifaces[dev].forEach(function(details){
-    if (details.family=='IPv4' && dev=='en0') {
+    if (details.family=='IPv4' && ( dev=='en0' || dev=='en1') ) {
       console.log('Found IP address: ' + details.address);
-      if(details.address!=COPTER_NETWORK_IP){
+      if(details.address==COPTER_NETWORK_IP){
         connected=true;
         console.log('Copter network connected, using IP: ' + COPTER_NETWORK_IP);
       }
