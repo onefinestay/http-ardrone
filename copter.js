@@ -10,9 +10,10 @@ for (var dev in ifaces) {
   var alias=0;
   ifaces[dev].forEach(function(details){
     if (details.family=='IPv4' && dev=='en0') {
+      console.log('Found IP address: ' + details.address);
       if(details.address!=COPTER_NETWORK_IP){
         connected=true;
-        console.log('Copter network connectedi, using IP: ' + COPTER_NETWORK_IP);
+        console.log('Copter network connected, using IP: ' + COPTER_NETWORK_IP);
       }
       ++alias;
     }
