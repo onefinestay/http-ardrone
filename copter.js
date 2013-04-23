@@ -50,7 +50,7 @@ function sendResp(res,resp){
   console.log(resp);
   res.header('Content-Type', 'text/html');
   res.send(200,resp);
-})
+}
 
 // configure the express app
 var http = require('http');
