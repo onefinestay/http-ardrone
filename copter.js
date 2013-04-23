@@ -236,16 +236,6 @@ app.get('/leds/:sequence/:hz/:duration', function(req,res) {
   }
 });
 
-// display usage for all others
-app.get('/*', function(req,res) {
-  if(checkConnection()){
-    var resp = '(takeoff,hover,land,move,animate,leds) args';
-    sendResp(res,resp);
-  } else {
-    connectWifi(res);
-  }
-});
-
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
