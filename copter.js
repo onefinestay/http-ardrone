@@ -74,125 +74,147 @@ var client  = arDrone.createClient();
 
 // expose the built-in ar-drone methods as GETs
 app.get('/takeoff', function(req,res) {
-  var resp = 'taking off...';
-  client.takeoff();
-  sendResp(res,resp);
+  if(checkConnection()){
+    var resp = 'taking off...';
+    client.takeoff();
+    sendResp(res,resp);
+  } else {
+    connectWifi(res);
+  }
 });
 
 app.get('/hover', function(req,res) {
-  var resp = 'commencing hover';
-  client.stop();
-  console.log(resp);
-  res.header('Content-Type', 'text/html');
-  res.send(200,resp);
+  if(checkConnection()){
+    var resp = 'commencing hover';
+    client.stop();
+    sendResp(res,resp);
+  } else {
+    connectWifi(res);
+  }
 });
 
 app.get('/land', function(req,res) {
-  var resp = '...landing';
-  client.land();
-  console.log(resp);
-  res.header('Content-Type', 'text/html');
-  res.send(200,resp);
+  if(checkConnection()){
+    var resp = '...landing';
+    client.land();
+    sendResp(res,resp);
+  } else {
+    connectWifi(res);
+  }
 });
 
 // expecting (up, down, left, right, forward, backward) and speed
 app.get('/move', function(req,res) {
-  var resp = 'move (up,down,left,right,forward,backward) speed';
-  console.log(resp);
-  res.header('Content-Type', 'text/html');
-  res.send(200,resp);
+  if(checkConnection()){
+    var resp = 'move (up,down,left,right,forward,backward) speed';
+    sendResp(res,resp);
+  } else {
+    connectWifi(res);
+  }
 });
 
 app.get('/move/:direction/:speed', function(req,res) {
-  var speed = parseInt(req.params.speed);
-  var direction = req.params.direction;
-  var resp = 'moving ' + direction + ' at speed ' + speed;
-  var usage = 'move (up,down,left,right,forward,backward) speed';
-  if(direction=='up'){
-    client.up(speed);
-  } else 
-  if(direction=='down'){
-    client.down(speed);
-  } else
-  if(direction=='left'){
-    client.left(speed);
-  } else
-  if(direction=='right'){
-    client.right(speed);
-  } else
-  if(direction=='forward'){
-    client.front(speed);
-  } else
-  if(direction=='backward'){
-    client.back(speed);
+  if(checkConnection()){
+    var speed = parseInt(req.params.speed);
+    var direction = req.params.direction;
+    var resp = 'moving ' + direction + ' at speed ' + speed;
+    var usage = 'move (up,down,left,right,forward,backward) speed';
+    if(direction=='up'){
+      client.up(speed);
+    } else 
+    if(direction=='down'){
+      client.down(speed);
+    } else
+    if(direction=='left'){
+      client.left(speed);
+    } else
+    if(direction=='right'){
+      client.right(speed);
+    } else
+    if(direction=='forward'){
+      client.front(speed);
+    } else
+    if(direction=='backward'){
+      client.back(speed);
+    } else {
+      res.header('Content-Type', 'text/html');
+      var resp = usage;
+    }
+    sendResp(res,resp);
   } else {
-    res.header('Content-Type', 'text/html');
-    var resp = usage;
+    connectWifi(res);
   }
-  console.log(resp);
-  res.header('Content-Type', 'text/html');
-  res.send(200,resp);
 });
 
 // expecting (cw, ccw) and speed
 app.get('/spin', function(req,res) {
-  var resp = 'spin (cw,ccw) speed';
-  console.log(resp);
-  res.header('Content-Type', 'text/html');
-  res.send(200,resp);
+  if(checkConnection()){
+    var resp = 'spin (cw,ccw) speed';
+    sendResp(res,resp);
+  } else {
+    connectWifi(res);
+  }
 });
 
 app.get('/spin/:direction/:speed', function(req,res) {
-  var speed = parseInt(req.params.speed);
-  var direction = req.params.direction;
-  var usage = 'spin (cw,ccw) speed';
-  if(direction=='cw'){
-    var resp = 'spinning clockwise with speed ' + speed;
-    client.clockwise(speed);
-  } else 
-  if(direction=='ccw'){
-    var resp = 'spinning counter-clockwise with speed ' + speed;
-    client.counterClockwise(speed);
+  if(checkConnection()){
+    var speed = parseInt(req.params.speed);
+    var direction = req.params.direction;
+    var usage = 'spin (cw,ccw) speed';
+    if(direction=='cw'){
+      var resp = 'spinning clockwise with speed ' + speed;
+      client.clockwise(speed);
+    } else 
+    if(direction=='ccw'){
+      var resp = 'spinning counter-clockwise with speed ' + speed;
+      client.counterClockwise(speed);
+    } else {
+      var resp = usage;
+    }
+    sendResp(res,resp);
   } else {
-    var resp = usage;
+    connectWifi(res);
   }
-  console.log(resp);
-  res.header('Content-Type', 'text/html');
-  res.send(200,resp);
 });
 
 // expecting (the list of sequences) and duration
 app.get('/animate', function(req,res) {
-  var sequences = ['phiM30Deg','phi30Deg','thetaM30Deg','theta30Deg','theta20degYaw200deg','theta20degYawM200deg','turnaround','turnaroundGodown','yawShake','yawDance','phiDance','thetaDance','vzDance','wave','phiThetaMixed','doublePhiThetaMixed','flipAhead','flipBehind','flipLeft','flipRight'];
-  var resp = 'animate (' + sequences + ') duration(ms)';
-  console.log(resp);
-  res.header('Content-Type', 'text/html');
-  res.send(200,resp);
+  if(checkConnection()){
+    var sequences = ['phiM30Deg','phi30Deg','thetaM30Deg','theta30Deg','theta20degYaw200deg','theta20degYawM200deg','turnaround','turnaroundGodown','yawShake','yawDance','phiDance','thetaDance','vzDance','wave','phiThetaMixed','doublePhiThetaMixed','flipAhead','flipBehind','flipLeft','flipRight'];
+    var resp = 'animate (' + sequences + ') duration(ms)';
+    sendResp(res,resp);
+  } else {
+    connectWifi(res);
+  }
 });
 
 app.get('/animate/:sequence/:duration', function(req,res) {
-  var duration = parseInt(req.params.duration);
-  var sequence = req.params.sequence;
-  var sequences = ['phiM30Deg','phi30Deg','thetaM30Deg','theta30Deg','theta20degYaw200deg','theta20degYawM200deg','turnaround','turnaroundGodown','yawShake','yawDance','phiDance','thetaDance','vzDance','wave','phiThetaMixed','doublePhiThetaMixed','flipAhead','flipBehind','flipLeft','flipRight'];
-  var usage = 'animate (' + sequences + ') <duration(ms)>';
-  var resp = 'animating with sequence ' + sequence + ' for duration ' + duration + ' ms';
-  if(sequences.indexOf(sequence) >= 0){
-    client.animate(sequence,duration);
+  if(checkConnection()){
+    var duration = parseInt(req.params.duration);
+    var sequence = req.params.sequence;
+    var sequences = ['phiM30Deg','phi30Deg','thetaM30Deg','theta30Deg','theta20degYaw200deg','theta20degYawM200deg','turnaround','turnaroundGodown','yawShake','yawDance','phiDance','thetaDance','vzDance','wave','phiThetaMixed','doublePhiThetaMixed','flipAhead','flipBehind','flipLeft','flipRight'];
+    var usage = 'animate (' + sequences + ') <duration(ms)>';
+    var resp = 'animating with sequence ' + sequence + ' for duration ' + duration + ' ms';
+    if(sequences.indexOf(sequence) >= 0){
+      client.animate(sequence,duration);
+    } else {
+      var resp = usage;
+    }
+    sendResp(res,resp);
   } else {
-    var resp = usage;
+    connectWifi(res);
   }
-  console.log(resp);
-  res.header('Content-Type', 'text/html');
-  res.send(200,resp);
 });
 
 // expecting (the list of sequences), hertz and speed    
 app.get('/leds', function(req,res) {
-  var sequences = ['blinkGreenRed','blinkGreen','blinkRed','blinkOrange','snakeGreenRed','fire','standard','red','green','redSnake','blank','rightMissile','leftMissile','doubleMissile','frontLeftGreenOthersRed','frontRightGreenOthersRed','rearRightGreenOthersRed','rearLeftGreenOthersRed','leftGreenRightRed','leftRedRightGreen','blinkStandard']
-  var resp = 'leds (' + sequences + ') hz duration(ms)';
-  console.log(resp);
-  res.header('Content-Type', 'text/html');
-  res.send(200,resp);    
+  if(checkConnection()){
+    var sequences = ['blinkGreenRed','blinkGreen','blinkRed','blinkOrange','snakeGreenRed','fire','standard','red','green','redSnake','blank','rightMissile','leftMissile','doubleMissile','frontLeftGreenOthersRed','frontRightGreenOthersRed','rearRightGreenOthersRed','rearLeftGreenOthersRed','leftGreenRightRed','leftRedRightGreen','blinkStandard']
+    var resp = 'leds (' + sequences + ') hz duration(ms)';
+    sendResp(res,resp);
+  } else {
+    connectWifi(res);
+  }
 });
 
 app.get('/leds/:sequence/:hz/:duration', function(req,res) {
@@ -208,9 +230,7 @@ app.get('/leds/:sequence/:hz/:duration', function(req,res) {
     } else {
       resp = usage;
     }
-    console.log(resp);
-    res.header('Content-Type', 'text/html');
-    res.send(200,resp);
+    sendResp(res,resp);
   } else {
     connectWifi(res); 
   }
@@ -218,10 +238,12 @@ app.get('/leds/:sequence/:hz/:duration', function(req,res) {
 
 // display usage for all others
 app.get('/*', function(req,res) {
-  var resp = '(takeoff,hover,land,move,animate,leds) args';
-  console.log(resp);
-  res.header('Content-Type', 'text/html');
-  res.send(200,resp);
+  if(checkConnection()){
+    var resp = '(takeoff,hover,land,move,animate,leds) args';
+    sendResp(res,resp);
+  } else {
+    connectWifi(res);
+  }
 });
 
 http.createServer(app).listen(app.get('port'), function(){
