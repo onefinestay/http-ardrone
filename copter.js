@@ -2,23 +2,51 @@
 // set this to the IP that your drone assigns when you connect to its wifi network
 var COPTER_NETWORK_IP = '192.168.1.2';
 
-var os=require('os');
-var ifaces=os.networkInterfaces();
-var connected=false;
+function checkConnection(){
+  var os=require('os');
+  var ifaces=os.networkInterfaces();
+  var connected=false;
 
-for (var dev in ifaces) {
-  var alias=0;
-  ifaces[dev].forEach(function(details){
-    if (details.family=='IPv4' && ( dev=='en0' || dev=='en1') ) {
-      console.log('Found IP address: ' + details.address);
-      if(details.address==COPTER_NETWORK_IP){
-        connected=true;
-        console.log('Copter network connected, using IP: ' + COPTER_NETWORK_IP);
+  for (var dev in ifaces) {
+    var alias=0;
+    ifaces[dev].forEach(function(details){
+      if (details.family=='IPv4' && ( dev=='en0' || dev=='en1') ) {
+        console.log('Found IP address: ' + details.address);
+        if(details.address==COPTER_NETWORK_IP){
+          connected=true;
+          console.log('Copter network connected, using IP: ' + COPTER_NETWORK_IP);
+        }
+        ++alias;
       }
-      ++alias;
-    }
+    });
+  }
+  return connected;
+}
+
+function connectWifi(res){
+
+  resp = "Not connected to the copter. Attempting to connect to the ar-drone.  Please try again in 60 seconds."
+  res.header('Content-Type', 'text/html');
+  res.send(200,resp);
+
+  var util = require('util'),
+  spawn = require('child_process').spawn,
+  sh = spawn('./utils/wifi.sh');
+
+  sh.stdout.on('data', function (data) {
+    console.log('stdout: ' + data);
+  });
+
+  sh.stderr.on('data', function (data) {
+    console.log('stderr: ' + data);
+  });
+
+  sh.on('exit', function (code) {
+    console.log('wifi shell exited with code ' + code);
   });
 }
+var connected = true;
+//var connected = checkConnection();
 
 if(connected==true){
 
@@ -168,20 +196,27 @@ if(connected==true){
   });
 
   app.get('/leds/:sequence/:hz/:duration', function(req,res) {
-    var duration = parseInt(req.params.duration);
-    var hz = parseInt(req.params.hz);
-    var sequence = req.params.sequence;
-    var sequences = ['blinkGreenRed','blinkGreen','blinkRed','blinkOrange','snakeGreenRed','fire','standard','red','green','redSnake','blank','rightMissile','leftMissile','doubleMissile','frontLeftGreenOthersRed','frontRightGreenOthersRed','rearRightGreenOthersRed','rearLeftGreenOthersRed','leftGreenRightRed','leftRedRightGreen','blinkStandard']
-    var usage = 'leds (' + sequences + ') hz duration(ms)';
-    var resp = 'animating leds with sequence ' + sequence + ' at ' + hz + ' hz for duration ' + duration + ' ms';
-    if(sequences.indexOf(sequence) >= 0){
-      client.animateLeds(sequence,hz,duration);
+    if(checkConnection()){
+      var duration = parseInt(req.params.duration);
+      var hz = parseInt(req.params.hz);
+      var sequence = req.params.sequence;
+      var sequences = ['blinkGreenRed','blinkGreen','blinkRed','blinkOrange','snakeGreenRed','fire','standard','red','green','redSnake','blank','rightMissile','leftMissile','doubleMissile','frontLeftGreenOthersRed','frontRightGreenOthersRed','rearRightGreenOthersRed','rearLeftGreenOthersRed','leftGreenRightRed','leftRedRightGreen','blinkStandard']
+      var usage = 'leds (' + sequences + ') hz duration(ms)';
+      var resp = 'animating leds with sequence ' + sequence + ' at ' + hz + ' hz for duration ' + duration + ' ms';
+      if(sequences.indexOf(sequence) >= 0){
+        client.animateLeds(sequence,hz,duration);
+      } else {
+        resp = usage;
+      }
+      console.log(resp);
+      res.header('Content-Type', 'text/html');
+      res.send(200,resp);
     } else {
-      resp = usage;
+      //resp = "Not connected to the copter. Attempting to connect to the ar-drone.  Please try again in 60 seconds."
+      //res.header('Content-Type', 'text/html');
+      //res.send(200,resp);
+      connectWifi(res); 
     }
-    console.log(resp);
-    res.header('Content-Type', 'text/html');
-    res.send(200,resp);
   });
 
   // display usage for all others
@@ -199,6 +234,7 @@ if(connected==true){
 } else {
 
   console.log('Not connected to copter');
+  connectWifi();  
 
 }
 
