@@ -45,6 +45,13 @@ function connectWifi(res){
     console.log('wifi shell exited with code ' + code);
   });
 }
+
+function sendResp(res,resp){
+  console.log(resp);
+  res.header('Content-Type', 'text/html');
+  res.send(200,resp);
+})
+
 // configure the express app
 var http = require('http');
 var express = require('express');
@@ -61,7 +68,7 @@ app.configure(function(){
   });
 });
 
-// connect to the drone
+// create drone client
 var arDrone = require('ar-drone');
 var client  = arDrone.createClient();
 
@@ -69,9 +76,7 @@ var client  = arDrone.createClient();
 app.get('/takeoff', function(req,res) {
   var resp = 'taking off...';
   client.takeoff();
-  console.log(resp);
-  res.header('Content-Type', 'text/html');
-  res.send(200,resp);
+  sendResp(res,resp);
 });
 
 app.get('/hover', function(req,res) {
