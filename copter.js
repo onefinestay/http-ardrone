@@ -72,6 +72,17 @@ app.configure(function(){
 var arDrone = require('ar-drone');
 var client  = arDrone.createClient();
 
+// check the status of the drone
+app.get('/status', function(req,res) {
+  if(checkConnection()){
+    var resp = 'Copter connected and ready for action.';
+    client.animateLeds('blinkGreenRed',400,5000);
+    sendResp(res,resp);
+  } else {
+    connectWifi(res);
+  }
+});
+
 // expose the built-in ar-drone methods as GETs
 app.get('/takeoff', function(req,res) {
   if(checkConnection()){
