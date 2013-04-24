@@ -20,5 +20,7 @@ Control the copter using any of the above commands.  To see additional usage, op
 Examples
 ========
 takeoff - http://localhost:3000/takeoff
+
 move left at speed 10 - http://localhost:3000/move/left/10
+
 blink Green/Red at 50 Hz for 8000 ms - http://localhost:3000/leds/blinkGreenRed/50/8000
