@@ -13,6 +13,12 @@ Open the app in a web browser, e.g. `http://localhost:3000`. The app responds wi
 
 `(takeoff,hover,land,move,animate,leds)`
 
-Control the copter using any of the above commands.  To see additional usage, hit the associated url, like `http://localhost:3000/move`:
+Control the copter using any of the above commands.  To see additional usage, open the associated url, like `http://localhost:3000/move`:
 
 `move (up,down,left,right,forward,backward) speed`
+
+Examples
+========
+takeoff - http://localhost:3000/takeoff
+move left at speed 10 - http://localhost:3000/move/left/10
+blink Green/Red at 50 Hz for 8000 ms - http://localhost:3000/leds/blinkGreenRed/50/8000
