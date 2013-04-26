@@ -76,7 +76,7 @@ var client  = arDrone.createClient();
 app.get('/status', function(req,res) {
   if(checkConnection()){
     var resp = 'Copter connected and ready for action.';
-    client.animateLeds('blinkGreenRed',400,5000);
+    client.animateLeds('blinkGreenRed',1,5000);
     sendResp(res,resp);
   } else {
     connectWifi(res);
