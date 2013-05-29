@@ -83,6 +83,22 @@ app.get('/status', function(req,res) {
   }
 });
 
+app.get('/victory', function(req,res) {
+  if(checkConnection()){
+    client.takeoff();
+    client
+      .after(5000, function() {
+        this.clockwise(0.5);
+      })
+      .after(3000, function() {
+        this.stop();
+        this.land();
+      });
+  } else {
+    connectWifi(res);
+  }
+});
+
 // expose the built-in ar-drone methods as GETs
 app.get('/takeoff', function(req,res) {
   if(checkConnection()){
